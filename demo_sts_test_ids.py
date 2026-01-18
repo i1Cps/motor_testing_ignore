@@ -47,12 +47,13 @@ def main():
 
     try:
         for speed in SPEEDS:
-            print(f"Testing motors at speed: {speed}")
+            print(f"\n=== Speed pass: {speed} ===")
             for label, ids in (("leg motors 1-5", LEG1_IDS), ("leg motors 6-10", LEG2_IDS)):
-                print(f"Testing {label}")
+                print(f"\n--- Testing {label} ---")
                 for sid in ids:
+                    print(f"\nMotor ID {sid}")
                     for target in (MIN_POS, MAX_POS, MIN_POS):
-                        print(f"motor ID {sid}: move to {target}")
+                        print(f"Command: target servo position {target}")
                         result, err = packet.WritePosEx(sid, target, speed, ACC)
                         if result != COMM_SUCCESS:
                             print(f"ID {sid}: {packet.getTxRxResult(result)}")
@@ -63,7 +64,7 @@ def main():
                         time.sleep(READ_DELAY)
                         pos, r_result, r_err = packet.ReadPos(sid)
                         if r_result == COMM_SUCCESS and r_err == 0:
-                            print(f"motor ID {sid}: target {target} pos {pos}")
+                            print(f"Feedback: target servo position {target}, actual position {pos}")
                         else:
                             if r_result != COMM_SUCCESS:
                                 print(f"ID {sid}: {packet.getTxRxResult(r_result)}")
