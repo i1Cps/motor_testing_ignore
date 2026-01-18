@@ -11,7 +11,22 @@ SPEEDS = [1000, 2500, 4000]
 ACC = 80
 MOVE_DELAY = 0.5
 READ_DELAY = 0.2
+POLL_DELAY = 0.1
+MOVE_TIMEOUT = 5.0
 IDS = [1, 2, 3, 4, 5]
+
+
+def wait_until_stopped(packet, sid):
+    start = time.time()
+    while True:
+        moving, result, err = packet.ReadMoving(sid)
+        if result != COMM_SUCCESS or err != 0:
+            return False
+        if moving == 0:
+            return True
+        if time.time() - start > MOVE_TIMEOUT:
+            return False
+        time.sleep(POLL_DELAY)
 
 
 def main():
@@ -34,6 +49,8 @@ def main():
                         print(f"ID {sid}: {packet.getTxRxResult(result)}")
                     if err:
                         print(f"ID {sid}: {packet.getRxPacketError(err)}")
+                    if not wait_until_stopped(packet, sid):
+                        print(f"motor ID {sid}: move wait timeout or error")
                     time.sleep(READ_DELAY)
                     pos, r_result, r_err = packet.ReadPos(sid)
                     if r_result == COMM_SUCCESS and r_err == 0:
