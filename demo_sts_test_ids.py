@@ -4,7 +4,7 @@ import time
 from STservo_sdk import PortHandler, sts, COMM_SUCCESS
 
 
-BAUD = 1_000_000
+BAUD = 115200
 MIN_POS = 0
 MAX_POS = 4095
 SPEEDS = [1000, 2500, 4000]
